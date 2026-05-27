@@ -30,7 +30,8 @@
     }
   },
   "files": {
-    "ignoreUnknown": false
+    "ignoreUnknown": false,
+    "includes": ["src/**"]
   },
   "vcs": {
     "enabled": true,

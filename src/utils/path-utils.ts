@@ -21,7 +21,7 @@ export function stripIndent(text: string): string {
     .map((l) => l.match(/^(\s*)/)?.[1].length ?? 0)
     .reduce((min, len) => Math.min(min, len), Infinity);
 
-  if (!isFinite(minIndent)) return text.trim();
+  if (!Number.isFinite(minIndent)) return text.trim();
 
   return lines
     .map((l) => l.slice(minIndent))

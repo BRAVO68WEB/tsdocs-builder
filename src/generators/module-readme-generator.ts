@@ -1,22 +1,22 @@
-import type { DocModule } from "../types/doc-types.ts";
+import type {
+  DocClass,
+  DocConstant,
+  DocEnum,
+  DocExport,
+  DocFunction,
+  DocInterface,
+  DocModule,
+  DocTypeAlias,
+  TsDocsOptions,
+} from "../types/doc-types.ts";
+import { generateClassSection } from "./class-generator.ts";
+import { generateConstantSection } from "./constant-generator.ts";
+import { generateEnumSection } from "./enum-generator.ts";
 import { generateFunctionSection } from "./function-generator.ts";
 import {
   generateInterfaceSection,
   generateTypeAliasSection,
 } from "./interface-generator.ts";
-import { generateClassSection } from "./class-generator.ts";
-import { generateEnumSection } from "./enum-generator.ts";
-import { generateConstantSection } from "./constant-generator.ts";
-import type {
-  DocExport,
-  DocFunction,
-  DocInterface,
-  DocTypeAlias,
-  DocClass,
-  DocEnum,
-  DocConstant,
-  TsDocsOptions,
-} from "../types/doc-types.ts";
 
 function categorize(exports: DocExport[]): Record<string, DocExport[]> {
   const cats: Record<string, DocExport[]> = {

@@ -1,3 +1,4 @@
+import { getSidebarAdapter } from "../adapters/index.ts";
 import type {
   DocModule,
   SidebarItem,
@@ -119,5 +120,6 @@ export function generateSidebarContent(
   opts: TsDocsOptions,
 ): string {
   const items = generateSidebar(mod, opts);
-  return sidebarToJson(items);
+  const adapter = getSidebarAdapter(opts.sidebarStyle);
+  return adapter.serialize(items, mod, opts);
 }

@@ -149,7 +149,12 @@ export interface DocModule {
 
 export type SortBy = "alphabetical" | "source" | "category";
 export type GroupBy = "kind" | "folder";
-export type SidebarStyle = "docusaurus" | "vitepress" | "neutrino";
+export type SidebarStyle =
+  | "docusaurus"
+  | "mintlify"
+  | "fumadocs"
+  | "vitepress"
+  | "neutrino";
 
 export interface TsDocsOptions {
   input: string;

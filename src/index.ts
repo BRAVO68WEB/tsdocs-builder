@@ -1,26 +1,29 @@
-import type {
-  TsDocsOptions,
-  SidebarStyle,
-  SortBy,
-  GroupBy,
-} from "./types/doc-types.ts";
+import { getSidebarAdapter } from "./adapters/index.ts";
 import { TsDocsParser } from "./core/parser.ts";
-import {
-  generateRootReadme,
-  generateModuleReadme,
-} from "./generators/module-readme-generator.ts";
-import { generateSidebarContent } from "./generators/navigation-generator.ts";
-import { docToFileName } from "./output/file-namer.ts";
-import { writeMarkdown, buildOutputPath } from "./output/markdown-writer.ts";
-import type { DocExport, DocModule, DocFile } from "./types/doc-types.ts";
+import { generateClassDoc } from "./generators/class-generator.ts";
+import { generateConstantDoc } from "./generators/constant-generator.ts";
+import { generateEnumDoc } from "./generators/enum-generator.ts";
 import { generateFunctionDoc } from "./generators/function-generator.ts";
 import {
   generateInterfaceDoc,
   generateTypeAliasDoc,
 } from "./generators/interface-generator.ts";
-import { generateClassDoc } from "./generators/class-generator.ts";
-import { generateEnumDoc } from "./generators/enum-generator.ts";
-import { generateConstantDoc } from "./generators/constant-generator.ts";
+import {
+  generateModuleReadme,
+  generateRootReadme,
+} from "./generators/module-readme-generator.ts";
+import { generateSidebar } from "./generators/navigation-generator.ts";
+import { docToFileName } from "./output/file-namer.ts";
+import { buildOutputPath, writeMarkdown } from "./output/markdown-writer.ts";
+import type {
+  DocExport,
+  DocFile,
+  DocModule,
+  GroupBy,
+  SidebarStyle,
+  SortBy,
+  TsDocsOptions,
+} from "./types/doc-types.ts";
 
 export function parseCliArgs(args: string[]): TsDocsOptions {
   const inputFlag = args.indexOf("--input");
@@ -90,9 +93,7 @@ export function parseCliArgs(args: string[]): TsDocsOptions {
     return defaultVal;
   };
   const getBoolFlag = (flags: string[], defaultVal: boolean) => {
-    const negIdx = args.findIndex((a) =>
-      flags.some((f) => a === `no-${f.slice(2)}`),
-    );
+    const negIdx = args.indexOf(`no-${f.slice(2)}`);
     if (negIdx !== -1) return false;
     return getFlag(flags, String(defaultVal)) !== "false";
   };
@@ -189,12 +190,17 @@ export async function run(opts: TsDocsOptions): Promise<void> {
 
   // Write sidebar
   if (opts.sidebar) {
-    const sidebarContent = generateSidebarContent(module, opts);
+    const adapter = getSidebarAdapter(opts.sidebarStyle);
+    const sidebarContent = adapter.serialize(
+      generateSidebar(module, opts),
+      module,
+      opts,
+    );
     await writeMarkdown(
-      buildOutputPath(opts.output, "", "_sidebar.json"),
+      buildOutputPath(opts.output, "", adapter.filename()),
       sidebarContent,
     );
-    console.log(`Wrote _sidebar.json`);
+    console.log(`Wrote ${adapter.filename()}`);
   }
 
   console.log(`\nDocumentation generated in: ${opts.output}`);
@@ -217,7 +223,7 @@ async function writeExportDocs(
   }
 }
 
-function generateExportDoc(
+export function generateExportDoc(
   exp: DocExport,
   typeLinkMap: Map<string, string>,
   opts: TsDocsOptions,
@@ -236,6 +242,17 @@ function generateExportDoc(
     case "constant":
       return generateConstantDoc(exp, opts);
   }
+}
+
+// Public API exports
+export { TsDocsParser } from "./core/parser.ts";
+export type { DocExport, DocModule, TsDocsOptions } from "./types/doc-types.ts";
+
+export async function generateDocs(opts: TsDocsOptions): Promise<DocModule> {
+  const parser = new TsDocsParser(opts);
+  const module = parser.parse();
+  await run(opts);
+  return module;
 }
 
 // Run if executed directly

@@ -1,13 +1,9 @@
-import type {
-  DocFunction,
-  DocParam,
-  TsDocsOptions,
-} from "../types/doc-types.ts";
 import {
   extractParamTags,
-  extractReturnsTag,
   extractRemarksTags,
+  extractReturnsTag,
 } from "../core/jsdoc-parser.ts";
+import type { DocFunction, TsDocsOptions } from "../types/doc-types.ts";
 import { linkTypesInText } from "../utils/type-linker.ts";
 
 export function generateFunctionDoc(

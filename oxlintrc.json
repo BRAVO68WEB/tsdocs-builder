@@ -1,9 +1,9 @@
 {
- "$schema": "https://docs.oxlint.org/schemas/0.5/oxlintrc.schema.json",
- "rules": {
- "no-boolean-literal-compare": "off",
- "no-sparse-arrays": "off"
- },
- "include": ["src"],
- "exclude": ["node_modules", "dist", "bin", "coverage"]
+  "$schema": "https://docs.oxlint.org/schemas/0.5/oxlintrc.schema.json",
+  "rules": {
+    "no-boolean-literal-compare": "off",
+    "no-sparse-arrays": "off"
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", "dist", "bin", "coverage"]
 }

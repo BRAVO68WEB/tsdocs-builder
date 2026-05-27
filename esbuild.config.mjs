@@ -7,9 +7,9 @@ await esbuild.build({
   target: "node18",
   outfile: "bin/tsdocs",
   format: "esm",
-  banner: { js: "#!/usr/bin/env node" },
   minify: false,
   sourcemap: true,
+  external: ["ts-morph"],
 });
 
-console.log("Binary built to bin/tsdocs");
+console.log("CLI binary built to bin/tsdocs");

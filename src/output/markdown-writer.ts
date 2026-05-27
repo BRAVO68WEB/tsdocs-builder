@@ -1,6 +1,7 @@
+import { mkdir, readFile, writeFile } from "fs/promises";
 export async function ensureDir(path: string): Promise<void> {
   try {
-    await Bun.write(path, "");
+    await mkdir(path, { recursive: true });
   } catch {
     // Will be created by write
   }
@@ -9,7 +10,7 @@ export async function ensureDir(path: string): Promise<void> {
     const partial = parts.slice(0, i).join("/");
     if (partial) {
       try {
-        await Bun.write(`${partial}/.keep`, "");
+        await mkdir(`${partial}/.keep`, { recursive: true }).catch(() => {});
       } catch {}
     }
   }
@@ -22,10 +23,10 @@ export async function writeMarkdown(
   const dir = outputPath.replace(/[/][^/]+$/, "");
   if (dir) {
     try {
-      await Bun.write(`${dir}/.keep`, "");
+      await mkdir(`${dir}/.keep`, { recursive: true }).catch(() => {});
     } catch {}
   }
-  await Bun.write(outputPath, content);
+  await writeFile(outputPath, content, "utf8");
 }
 
 export async function writeIfChanged(
@@ -33,7 +34,7 @@ export async function writeIfChanged(
   content: string,
 ): Promise<boolean> {
   try {
-    const existing = await Bun.file(outputPath).text();
+    const existing = await readFile(outputPath, "utf8").catch(() => "");
     if (existing === content) return false;
   } catch {}
   await writeMarkdown(outputPath, content);

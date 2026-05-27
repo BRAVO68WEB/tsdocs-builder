@@ -15,15 +15,16 @@
   "scripts": {
     "dev": "bun run src/index.ts",
     "build:lib": "tsup",
-    "build": "bun run build:lib",
+    "build": "bun run build:lib && bun run build:cli",
     "typecheck": "tsc --noEmit",
     "lint": "biome check . && oxlint .",
     "fmt": "biome check --write . --max-diagnostics 50 --unsafe",
     "fmt:check": "biome check .",
     "test": "vitest run",
     "ci": "bun run fmt:check && bun run lint && bun run typecheck && bun run test && bun run build",
-    "prepublishOnly": "bun run build:lib",
-    "release": "bunx changeset publish"
+    "prepublishOnly": "bun run build",
+    "release": "bunx changeset publish",
+    "build:cli": "node esbuild.config.mjs"
   },
   "dependencies": {
     "minimatch": "^10.2.5",

@@ -22,7 +22,8 @@
     "fmt:check": "biome check .",
     "test": "vitest run",
     "ci": "bun run fmt:check && bun run lint && bun run typecheck && bun run test && bun run build",
-    "prepublishOnly": "bun run build:lib"
+    "prepublishOnly": "bun run build:lib",
+    "release": "bunx changeset publish"
   },
   "dependencies": {
     "minimatch": "^10.2.5",

@@ -21,8 +21,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
-        with: null
-        bun-version: latest
+        with:
+          bun-version: latest
       - run: bun install --frozen-lockfile
       - run: bun run lint
   typecheck:
@@ -32,8 +32,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
-        with: null
-        bun-version: latest
+        with:
+          bun-version: latest
       - run: bun install --frozen-lockfile
       - run: bun run typecheck
   test:
@@ -43,8 +43,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
-        with: null
-        bun-version: latest
+        with:
+          bun-version: latest
       - run: bun install --frozen-lockfile
       - run: bun run test
   build:
@@ -54,8 +54,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
-        with: null
-        bun-version: latest
+        with:
+          bun-version: latest
       - run: bun install --frozen-lockfile
       - run: bun run build
   publish:
@@ -71,8 +71,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
-        with: null
-        bun-version: latest
+        with:
+          bun-version: latest
       - run: bun install --frozen-lockfile
       - run: bun run build
       - run: bun add -D @changesets/cli

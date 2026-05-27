@@ -1,79 +1,77 @@
 name: CI
-
-on:
- push:
-  branches: [main]
- pull_request:
-
+'on':
+  push: null
+  branches:
+    - main
+  pull_request: null
 concurrency:
- group: ${{ github.workflow }}-${{ github.ref }}
- cancel-in-progress: true
-
-permissions:
-  id-token: write  # Required for OIDC
-  contents: read
-
+  group: '${{ github.workflow }}-${{ github.ref }}'
+  cancel-in-progress: true
 jobs:
- lint:
-  name: Lint
-  runs-on: ubuntu-latest
-  steps:
-    - uses: actions/checkout@v4
-    - uses: oven-sh/setup-bun@v2
-      with:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with: null
         bun-version: latest
-    - run: bun install --frozen-lockfile
-    - run: bun run lint
-
- typecheck:
-  name: Type Check
-  runs-on: ubuntu-latest
-  steps:
-    - uses: actions/checkout@v4
-    - uses: oven-sh/setup-bun@v2
-      with:
+      - run: bun install --frozen-lockfile
+      - run: bun run lint
+  typecheck:
+    name: Type Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with: null
         bun-version: latest
-    - run: bun install --frozen-lockfile
-    - run: bun run typecheck
-
- test:
-  name: Test
-  runs-on: ubuntu-latest
-  steps:
-    - uses: actions/checkout@v4
-    - uses: oven-sh/setup-bun@v2
-      with:
+      - run: bun install --frozen-lockfile
+      - run: bun run typecheck
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with: null
         bun-version: latest
-    - run: bun install --frozen-lockfile
-    - run: bun run test
-
- build:
-  name: Build
-  runs-on: ubuntu-latest
-  steps:
-    - uses: actions/checkout@v4
-    - uses: oven-sh/setup-bun@v2
-      with:
+      - run: bun install --frozen-lockfile
+      - run: bun run test
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with: null
         bun-version: latest
-    - run: bun install --frozen-lockfile
-    - run: bun run build
-
- publish:
-  name: Publish to npm
-  runs-on: ubuntu-latest
-  needs: [lint, typecheck, test, build]
-  # Only publish on version bumps (changesets creates a release PR)
-  if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-  steps:
-    - uses: actions/checkout@v4
-    - uses: oven-sh/setup-bun@v2
-      with:
+      - run: bun install --frozen-lockfile
+      - run: bun run build
+  publish:
+    name: Publish to npm
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs:
+      - lint
+      - typecheck
+      - test
+      - build
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with: null
         bun-version: latest
-    - uses: actions/setup-node@v4
-      with:
-        node-version: "22"
-        registry-url: "https://registry.npmjs.org"
-    - run: bun install --frozen-lockfile
-    - run: bun add -D @changesets/cli
-    - run: bunx changeset version
-    - run: bunx changeset publish
+      - run: bun install --frozen-lockfile
+      - run: bun run build
+      - run: bun add -D @changesets/cli
+      - run: bunx changeset version
+      - run: >-
+          echo '//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}' >
+          .npmrc
+      - run: npm publish --access public

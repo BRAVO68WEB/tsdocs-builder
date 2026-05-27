@@ -18,9 +18,9 @@
     "build:bin": "node scripts/build-binary.mjs",
     "build": "bun run build:lib && bun run build:bin",
     "typecheck": "tsc --noEmit",
-    "lint": "eslint . && oxlint .",
-    "fmt": "biome check --write . --max-diagnostics 50 --unsafe && prettier --write '**/*.md' '**/*.json'",
-    "fmt:check": "biome check . && prettier --check '**/*.md' '**/*.json'",
+    "lint": "biome check . && oxlint .",
+    "fmt": "biome check --write . --max-diagnostics 50 --unsafe",
+    "fmt:check": "biome check .",
     "test": "vitest run",
     "ci": "bun run fmt:check && bun run lint && bun run typecheck && bun run test && bun run build"
   },
@@ -32,13 +32,8 @@
   "devDependencies": {
     "@biomejs/biome": "2.4.15",
     "@types/node": "^22.0.0",
-    "@typescript-eslint/eslint-plugin": "^8.0.0",
-    "@typescript-eslint/parser": "^8.0.0",
     "esbuild": "^0.24.0",
-    "eslint": "^8.57.0",
-    "eslint-plugin-jsdoc": "^50.0.0",
     "oxlint": "^0.15.0",
-    "prettier": "^3.0.0",
     "tsup": "^8.0.0",
     "typescript": "^5.7.0",
     "vitest": "^2.0.0"

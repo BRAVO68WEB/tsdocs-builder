@@ -417,7 +417,7 @@ function buildClassSignature(decl: ClassDeclaration): string {
   if (impl?.length) {
     sig += ` implements ${impl.map((i: any) => cleanTypeName(i.getType().getText())).join(", ")}`;
   }
-  return sig!;
+  return sig ?? "";
 }
 
 function isPrivate(node: any): boolean {

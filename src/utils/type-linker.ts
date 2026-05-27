@@ -47,7 +47,8 @@ export function linkTypesInText(
 ): string {
   return text.replace(/\b([A-Z][a-zA-Z0-9]*)\b/g, (match) => {
     if (BUILTIN_TYPES.has(match) || !typeMap.has(match)) return match;
-    return `[${match}](./${typeMap.get(match)!})`;
+    const link = typeMap.get(match);
+    return link !== undefined ? `[${match}](./${link})` : match;
   });
 }
 

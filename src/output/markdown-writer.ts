@@ -9,7 +9,7 @@ export async function ensureDir(path: string): Promise<void> {
     const partial = parts.slice(0, i).join("/");
     if (partial) {
       try {
-        await Bun.write(partial + "/.keep", "");
+        await Bun.write(`${partial}/.keep`, "");
       } catch {}
     }
   }
@@ -22,7 +22,7 @@ export async function writeMarkdown(
   const dir = outputPath.replace(/[/][^/]+$/, "");
   if (dir) {
     try {
-      await Bun.write(dir + "/.keep", "");
+      await Bun.write(`${dir}/.keep`, "");
     } catch {}
   }
   await Bun.write(outputPath, content);

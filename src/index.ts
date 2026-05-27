@@ -93,8 +93,10 @@ export function parseCliArgs(args: string[]): TsDocsOptions {
     return defaultVal;
   };
   const getBoolFlag = (flags: string[], defaultVal: boolean) => {
-    const negIdx = args.indexOf(`no-${f.slice(2)}`);
-    if (negIdx !== -1) return false;
+    for (const f of flags) {
+      const negIdx = args.indexOf(`--no-${f.slice(2)}`);
+      if (negIdx !== -1) return false;
+    }
     return getFlag(flags, String(defaultVal)) !== "false";
   };
 
@@ -170,7 +172,7 @@ export async function run(opts: TsDocsOptions): Promise<void> {
     buildOutputPath(opts.output, "", "README.md"),
     rootReadme,
   );
-  console.log(`Wrote README.md`);
+  console.log("Wrote README.md");
 
   // Write individual export docs
   await writeExportDocs(module.files, opts.output, "", typeLinkMap, opts);

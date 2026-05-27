@@ -25,7 +25,7 @@ export function generateClassDoc(
   if (cls.extends) {
     parts.push(`extends ${linkTypesInText(cls.extends, typeLinkMap)}`);
   }
-  if (cls.implements && cls.implements.length) {
+  if (cls.implements?.length) {
     const implStr = cls.implements
       .map((i) => linkTypesInText(i, typeLinkMap))
       .join(", ");

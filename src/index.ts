@@ -257,9 +257,8 @@ export async function generateDocs(opts: TsDocsOptions): Promise<DocModule> {
   return module;
 }
 
-// Run if executed directly
-const args = process.argv.slice(2);
-if (import.meta.path.includes("index.ts")) {
-  const opts = parseCliArgs(args);
+// Run if executed directly as a CLI (supports both Bun and Node.js)
+if (process.argv[1] === import.meta.filename) {
+  const opts = parseCliArgs(process.argv.slice(2));
   await run(opts);
 }

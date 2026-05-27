@@ -15,14 +15,14 @@
   "scripts": {
     "dev": "bun run src/index.ts",
     "build:lib": "tsup",
-    "build:bin": "node scripts/build-binary.mjs",
-    "build": "bun run build:lib && bun run build:bin",
+    "build": "bun run build:lib",
     "typecheck": "tsc --noEmit",
     "lint": "biome check . && oxlint .",
     "fmt": "biome check --write . --max-diagnostics 50 --unsafe",
     "fmt:check": "biome check .",
     "test": "vitest run",
-    "ci": "bun run fmt:check && bun run lint && bun run typecheck && bun run test && bun run build"
+    "ci": "bun run fmt:check && bun run lint && bun run typecheck && bun run test && bun run build",
+    "prepublishOnly": "bun run build:lib"
   },
   "dependencies": {
     "minimatch": "^10.2.5",
@@ -40,5 +40,17 @@
   },
   "engines": {
     "node": ">=18.0.0"
-  }
+  },
+  "files": [
+    "dist/",
+    "bin/"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Bravo68/tsdocs-builder"
+  },
+  "bugs": {
+    "url": "https://github.com/Bravo68/tsdocs-builder/issues"
+  },
+  "homepage": "https://github.com/Bravo68/tsdocs-builder#readme"
 }

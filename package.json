@@ -1,6 +1,6 @@
 {
   "name": "tsdocs-builder",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "A Bun CLI tool for generating Markdown documentation from TypeScript source code",
   "type": "module",
   "exports": {

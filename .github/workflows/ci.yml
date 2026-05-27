@@ -9,6 +9,10 @@ concurrency:
  group: ${{ github.workflow }}-${{ github.ref }}
  cancel-in-progress: true
 
+permissions:
+  id-token: write  # Required for OIDC
+  contents: read
+
 jobs:
  lint:
   name: Lint
@@ -73,5 +77,3 @@ jobs:
     - run: bun add -D @changesets/cli
     - run: bunx changeset version
     - run: bunx changeset publish
-      env:
-      NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

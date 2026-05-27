@@ -1,6 +1,6 @@
 {
   "name": "tsdocs-builder",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A Bun CLI tool for generating Markdown documentation from TypeScript source code",
   "type": "module",
   "exports": {
@@ -48,10 +48,13 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/Bravo68/tsdocs-builder"
+    "url": "https://github.com/BRAVO68WEB/tsdocs-builder"
   },
   "bugs": {
-    "url": "https://github.com/Bravo68/tsdocs-builder/issues"
+    "url": "https://github.com/BRAVO68WEB/tsdocs-builder/issues"
   },
-  "homepage": "https://github.com/Bravo68/tsdocs-builder#readme"
+  "homepage": "https://github.com/BRAVO68WEB/tsdocs-builder#readme",
+  "publishConfig": {
+    "provenance": true
+  }
 }

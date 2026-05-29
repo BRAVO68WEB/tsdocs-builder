@@ -14,10 +14,14 @@ tsdocs-builder parses your TypeScript files using [ts-morph](https://github.com/
 ## Features
 
 - **TypeScript-first** — Understands interfaces, types, classes, enums, functions, and constants
-- **JSDoc extraction** — Pulls summaries, descriptions, `@param`, `@returns`, `@example`, `@deprecated`, and custom tags
+- **JSDoc extraction** — Pulls summaries, descriptions, `@param`, `@returns`, `@example`, `@deprecated`, `@internal`, `@ignore`, and custom tags
 - **Multi-framework sidebar** — Generates sidebar config for Docusaurus, Mintlify, Fumadocs, VitePress, or Neutrino
 - **Type linking** — Automatically links types across your codebase
 - **Module grouping** — Organizes exports by file and submodule directory
+- **Config file** — Load options from a JSON config file; CLI flags override config values
+- **Dry-run preview** — Preview what would be generated without writing any files
+- **Path exclusion** — Skip specific folders or files with glob patterns
+- **Missing docs flag** — Flag exports without JSDoc documentation
 - **CLI or library** — Use it as a command-line tool or import it as a TypeScript module
 - **Bun-native** — Built for Bun, works with Node 18+
 
@@ -95,45 +99,75 @@ tsdocs --input ./src --output ./docs --sidebarStyle mintlify
 
 # Skip private members
 tsdocs --input ./src --output ./docs --skipPrivate
+
+# Preview what would be generated
+tsdocs --input ./src --output ./docs --dryrun
+
+# Skip specific folders
+tsdocs --input ./src --output ./docs --ignorePaths "hooks/,tests/"
+
+# Use config file
+tsdocs --config ./tsdocs.config.json
 ```
+
+### Config file
+
+Create a `tsdocs.config.json` to save your preferred options:
+
+```json
+{
+ "input": "./src",
+ "output": "./docs",
+ "baseName": "my-library",
+ "skipPrivate": true,
+ "skipInternal": true,
+ "sidebar": true,
+ "sidebarStyle": "docusaurus"
+}
+```
+
+Then run with `tsdocs --config ./tsdocs.config.json`. CLI flags override config values.
 
 ---
 
 ## CLI Options
 
-| Flag                        | Short | Default                                                           | Description                                                                  |
-| --------------------------- | ----- | ----------------------------------------------------------------- | ---------------------------------------------------------------------------- |
-| `--input <path>`            | `-i`  | —                                                                 | **Required.** Path to TypeScript source files                                |
-| `--output <path>`           | `-o`  | —                                                                 | **Required.** Output directory for docs                                      |
-| `--baseName <name>`         | `-b`  | Module name                                                       | Base path prefix in sidebar links                                            |
-| `--include <glob>[,<glob>]` | —     | `**/*.ts`, `**/*.tsx`                                             | File patterns to include                                                     |
-| `--exclude <glob>[,<glob>]` | —     | `**/*.d.ts`, `**/*.spec.ts`, `**/*.test.ts`, `**/node_modules/**` | File patterns to exclude                                                     |
-| `--skipPrivate`             | —     | `true`                                                            | Omit private (`#`) members from docs                                         |
-| `--no-skipPrivate`          | —     | —                                                                 | Include private members                                                      |
-| `--skipDeprecated`          | —     | `false`                                                           | Omit `@deprecated` members                                                   |
-| `--skipInternal`            | —     | `false`                                                           | Omit `@internal` members                                                     |
-| `--ignoreSources`           | —     | `false`                                                           | Skip source location links                                                   |
-| `--sidebar`                 | —     | `true`                                                            | Generate sidebar config file                                                 |
-| `--no-sidebar`              | —     | —                                                                 | Skip sidebar generation                                                      |
-| `--sidebarStyle <style>`    | —     | `docusaurus`                                                      | Sidebar style: `docusaurus`, `mintlify`, `fumadocs`, `vitepress`, `neutrino` |
-| `--groupBy <mode>`          | —     | `kind`                                                            | Group exports by: `kind`, `folder`                                           |
-| `--sortBy <mode>`           | —     | `alphabetical`                                                    | Sort by: `alphabetical`, `source`, `category`                                |
-| `--treatAsSingleModule`     | —     | `false`                                                           | Do not create subdirectory per folder                                        |
-| `--config <path>`           | —     | —                                                                 | Path to options JSON file                                                    |
-| `--help`                    | `-h`  | —                                                                 | Show help                                                                    |
-| `--version`                 | `-V`  | —                                                                 | Show version                                                                 |
+| Flag | Short | Default | Description |
+|------|-------|---------|-------------|
+| `--input <path>` | `-i` | — | **Required.** Path to TypeScript source files |
+| `--output <path>` | `-o` | — | **Required.** Output directory for docs |
+| `--baseName <name>` | `-b` | Module name | Base path prefix in sidebar links |
+| `--include <glob>[,<glob>]` | — | `**/*.ts`, `**/*.tsx` | File patterns to include |
+| `--exclude <glob>[,<glob>]` | — | `**/*.d.ts`, `**/*.spec.ts`, `**/*.test.ts`, `**/node_modules/**` | File patterns to exclude |
+| `--skipPrivate` | — | `true` | Omit private (`#`) members from docs |
+| `--no-skipPrivate` | — | — | Include private members |
+| `--skipDeprecated` | — | `false` | Omit `@deprecated` members |
+| `--skipInternal` | — | `false` | Omit `@internal` members |
+| `--ignoreSources` | — | `false` | Skip source location links |
+| `--sidebar` | — | `true` | Generate sidebar config file |
+| `--no-sidebar` | — | — | Skip sidebar generation |
+| `--sidebarStyle <style>` | — | `docusaurus` | Sidebar style: `docusaurus`, `mintlify`, `fumadocs`, `vitepress`, `neutrino` |
+| `--groupBy <mode>` | — | `kind` | Group exports by: `kind`, `folder` |
+| `--sortBy <mode>` | — | `alphabetical` | Sort by: `alphabetical`, `source`, `category` |
+| `--treatAsSingleModule` | — | `false` | Do not create subdirectory per folder |
+| `--config <path>` | — | — | Path to options JSON file |
+| `--dryrun` | — | `false` | Preview output without writing files |
+| `--ignorePaths <glob>` | — | — | Skip files/folders matching glob patterns (`hooks/`, `**/*.test.ts`) |
+| `--showMissingRef` | — | `false` | Flag exports missing JSDoc documentation |
+| `--help` | `-h` | — | Show help |
+| `--version` | `-V` | — | Show version |
 
 ---
 
 ## Supported Doc Frameworks
 
-| Framework      | Sidebar File      | Notes                                        |
-| -------------- | ----------------- | -------------------------------------------- |
-| **Docusaurus** | `_sidebar.json`   | Default. Nested `{ label, items }` structure |
-| **Mintlify**   | `_meta.json`      | Per-directory. `{ title, slug }` entries     |
-| **Fumadocs**   | `sidebar.json`    | MDX-safe. `{ title, link, children }`        |
-| **VitePress**  | `sidebar.json`    | Flat. `{ text, link, items }`                |
-| **Neutrino**   | `navigation.json` | Flattened `{ text, link }` array             |
+| Framework | Sidebar File | Notes |
+|-----------|--------------|-------|
+| **Docusaurus** | `_sidebar.json` | Default. Nested `{ label, items }` structure |
+| **Mintlify** | `_meta.json` | Per-directory. `{ title, slug }` entries |
+| **Fumadocs** | `sidebar.json` | MDX-safe. `{ title, link, children }` |
+| **VitePress** | `sidebar.json` | Flat. `{ text, link, items }` |
+| **Neutrino** | `navigation.json` | Flattened `{ text, link }` array |
 
 ### Example: Mintlify
 
@@ -166,10 +200,10 @@ import type { TsDocsOptions, DocModule } from "tsdocs-builder";
 
 // Low-level: parse and get the DocModule
 const opts: TsDocsOptions = {
-  input: "./src",
-  output: "./docs",
-  skipPrivate: true,
-  sidebarStyle: "docusaurus",
+ input: "./src",
+ output: "./docs",
+ skipPrivate: true,
+ sidebarStyle: "docusaurus",
 };
 
 const parser = new TsDocsParser(opts);
@@ -211,7 +245,8 @@ src/
 ├── types/
 │ └── doc-types.ts # Core document types
 └── utils/
- └── path-utils.ts
+ ├── path-utils.ts
+ └── config-loader.ts
 ```
 
 **Parsing flow:** `index.ts` → `TsDocsParser` → `extractor.ts` → JSDoc parsed per-export → Markdown generated per kind → sidebar serialized per adapter.

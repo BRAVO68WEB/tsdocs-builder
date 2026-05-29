@@ -172,6 +172,9 @@ export interface TsDocsOptions {
   sortBy: SortBy;
   treatAsSingleModule: boolean;
   config?: string;
+  ignorePaths?: string[];
+  dryrun?: boolean;
+  showMissingRef?: boolean;
 }
 
 export interface SidebarItem {

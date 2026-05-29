@@ -1,4 +1,4 @@
-import { resolve as resolvePath } from "node:path";
+import { resolve as resolvePath } from "path";
 import { Project, type SourceFile } from "ts-morph";
 import type {
   DocExport,
@@ -66,6 +66,12 @@ export class TsDocsParser {
     const filePath = sf.getFilePath().replace(/\\/g, "/");
     for (const pattern of this.options.exclude ?? []) {
       if (this.matchGlob(filePath, pattern)) return true;
+    }
+    const inputBase = this.options.input.replace(/\\/g, "/");
+    const relPath = `/${filePath.slice(inputBase.length)}`.replace(/\\/g, "/");
+    for (const p of this.options.ignorePaths ?? []) {
+      if (this.matchGlob(relPath, p) || this.matchGlob(filePath, p))
+        return true;
     }
     return false;
   }

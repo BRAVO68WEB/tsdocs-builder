@@ -156,6 +156,8 @@ function extractInterface(
       if (m.jsdoc.isIgnore) continue;
       members.push(m);
     }
+    // If all members were skipped (internal), don't document the empty interface
+    if (options.skipInternal && members.length === 0) return null;
 
     const extendsTypes =
       decl
@@ -303,11 +305,18 @@ function extractEnum(
     if (options.skipInternal && jsdoc.isInternal) return null;
     if (jsdoc.isIgnore) return null;
 
-    const members: DocEnumMember[] = decl.getMembers().map((m: any) => ({
-      name: m.getName(),
-      value: m.getValue?.() ?? m.getText(),
-      jsdoc: parseJSDoc(m),
-    }));
+    const members: DocEnumMember[] = [];
+    for (const m of decl.getMembers()) {
+      const memberJsdoc = parseJSDoc(m);
+      if (options.skipInternal && memberJsdoc.isInternal) continue;
+      members.push({
+        name: m.getName(),
+        value: m.getValue?.() ?? m.getText(),
+        jsdoc: memberJsdoc,
+      });
+    }
+    // If all members were skipped, don't document the empty enum
+    if (options.skipInternal && members.length === 0) return null;
 
     return {
       kind: "enum",
@@ -417,7 +426,7 @@ function buildClassSignature(decl: ClassDeclaration): string {
   if (impl?.length) {
     sig += ` implements ${impl.map((i: any) => cleanTypeName(i.getType().getText())).join(", ")}`;
   }
-  return sig ?? "";
+  return sig!;
 }
 
 function isPrivate(node: any): boolean {

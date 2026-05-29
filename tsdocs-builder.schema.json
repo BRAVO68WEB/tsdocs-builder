@@ -1,0 +1,103 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://tsdocs-builder.dev/tsdocs-builder.schema.json",
+  "title": "tsdocs-builder Configuration",
+  "description": "Configuration file schema for tsdocs-builder CLI tool that generates Docusaurus-compatible documentation from TypeScript source code.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "input": {
+      "type": "string",
+      "description": "Path to the TypeScript source directory to document. Can be absolute or relative to config file location."
+    },
+    "output": {
+      "type": "string",
+      "description": "Path to the output directory where documentation markdown files will be written. Can be absolute or relative to config file location."
+    },
+    "baseName": {
+      "type": "string",
+      "description": "Optional package/library name to use in the generated documentation title. If not provided, inferred from input directory name."
+    },
+    "include": {
+      "type": "array",
+      "items": { "type": "string" },
+      "default": ["**/*.ts", "**/*.tsx"],
+      "description": "Glob patterns for files to include in documentation generation. Relative to input directory."
+    },
+    "exclude": {
+      "type": "array",
+      "items": { "type": "string" },
+      "default": [
+        "**/*.d.ts",
+        "**/*.spec.ts",
+        "**/*.test.ts",
+        "**/node_modules/**"
+      ],
+      "description": "Glob patterns for files to exclude from documentation generation. Applied to full file paths."
+    },
+    "ignorePaths": {
+      "type": "array",
+      "items": { "type": "string" },
+      "default": [],
+      "description": "Folder/file patterns to skip during documentation generation. Supports glob patterns like 'hooks/', 'tests/*.ts', '**/internal/**'. Applied to relative path segments."
+    },
+    "skipPrivate": {
+      "type": "boolean",
+      "default": true,
+      "description": "Skip documenting private class members and methods (starting with # or marked private)."
+    },
+    "skipDeprecated": {
+      "type": "boolean",
+      "default": false,
+      "description": "Skip documenting items marked with @deprecated JSDoc tag."
+    },
+    "ignoreSources": {
+      "type": "boolean",
+      "default": false,
+      "description": "Omit source file location references from generated documentation."
+    },
+    "skipInternal": {
+      "type": "boolean",
+      "default": false,
+      "description": "Skip documenting items marked with @internal JSDoc tag, including internal enum members and interface members."
+    },
+    "sidebar": {
+      "type": "boolean",
+      "default": true,
+      "description": "Generate a sidebar configuration file for the documentation framework."
+    },
+    "sidebarStyle": {
+      "type": "string",
+      "enum": ["docusaurus", "mintlify", "fumadocs", "vitepress", "neutrino"],
+      "default": "docusaurus",
+      "description": "Documentation framework to generate sidebar for. Affects sidebar file format and naming."
+    },
+    "groupBy": {
+      "type": "string",
+      "enum": ["kind", "folder"],
+      "default": "kind",
+      "description": "How to group exports in documentation. 'kind' groups by type (functions, interfaces, etc.), 'folder' groups by source directory structure."
+    },
+    "sortBy": {
+      "type": "string",
+      "enum": ["alphabetical", "source", "category"],
+      "default": "alphabetical",
+      "description": "Sort order for exports within groups. 'alphabetical' sorts by name, 'source' preserves source order, 'category' groups by declaration type."
+    },
+    "treatAsSingleModule": {
+      "type": "boolean",
+      "default": false,
+      "description": "Treat all source files as a single module without subdirectory grouping. Creates flat output structure."
+    },
+    "dryrun": {
+      "type": "boolean",
+      "default": false,
+      "description": "Preview mode: parse source and show what would be generated without writing any files."
+    },
+    "showMissingRef": {
+      "type": "boolean",
+      "default": false,
+      "description": "Flag exports missing JSDoc documentation. Emits a warning summary at the end of generation listing all undocumented exports."
+    }
+  }
+}
